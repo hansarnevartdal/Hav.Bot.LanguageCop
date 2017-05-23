@@ -27,20 +27,27 @@ namespace Hav.Bot.LanguageCop
 
             if (!await ValidateBotAuthentication(req, activity))
             {
+                log.Warning("Invalid bot credentials.");
                 return req.CreateErrorResponse(HttpStatusCode.Unauthorized, "Invalid bot credentials.");
             }
 
-            if (activity.IsChannelActivity())
+            if (!activity.IsChannelActivity())
             {
-                if (activity.Type == ActivityTypes.Message && activity.IsApplicableForLanguageEvaluation())
-                {
-                    await HandleLanguageEvaluation(activity);
-                }
-                else if (activity.Type == ActivityTypes.ConversationUpdate)
-                {
-                    await HandleNewMembers(activity);
-                }
+                log.Info("Non-channel activity.");
+                return req.CreateResponse(HttpStatusCode.OK);
             }
+
+            if (activity.Type == ActivityTypes.Message && activity.IsApplicableForLanguageEvaluation())
+            {
+                log.Info("Handleing language evaluation.");
+                await HandleLanguageEvaluation(activity);
+            }
+            else if (activity.Type == ActivityTypes.ConversationUpdate)
+            {
+                log.Info("Handeling new members in channel.");
+                await HandleNewMembers(activity);
+            }
+
             return req.CreateResponse(HttpStatusCode.OK);
         }
 
