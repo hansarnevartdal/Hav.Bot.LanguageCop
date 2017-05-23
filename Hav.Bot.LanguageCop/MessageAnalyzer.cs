@@ -39,12 +39,12 @@ namespace Hav.Bot.LanguageCop
 
             if (activity.Type == ActivityTypes.Message && activity.IsApplicableForLanguageEvaluation())
             {
-                log.Info("Handleing language evaluation.");
+                log.Info("Handling language evaluation.");
                 await HandleLanguageEvaluation(activity);
             }
             else if (activity.Type == ActivityTypes.ConversationUpdate)
             {
-                log.Info("Handeling new members in channel.");
+                log.Info("Handling new members in channel.");
                 await HandleNewMembers(activity);
             }
 
